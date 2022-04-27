@@ -80,8 +80,6 @@ router.get('/login/:id',(req, res)=>{
 
 router.post('/register',async (req, res)=>{
 
-    console.log(req.body.name);
-
     const name = req.body.name;
     const lastName = req.body.lastName;
     const phone = req.body.phone;
@@ -93,7 +91,7 @@ router.post('/register',async (req, res)=>{
         if(error){
             console.log(error);
         }else{
-            console.log("buena pa")
+            console.log("Registro exitoso");
         }
     });
 })
@@ -126,6 +124,36 @@ router.get('/enviarCorreo',async (req, res)=>{
             }
         ],
         html: "<b>Buen día, adjuntamos tu factura, espero lo disfrutes!</b>", // html body
+      });
+
+      console.log("Message sent: %s", info.messageId);
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+})
+
+
+router.post('/enviarCorreoRegistro',async (req, res)=>{
+
+    let testAccount = await nodemailer.createTestAccount();
+    
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: 'cristiancamiloduarte1502@gmail.com', // generated ethereal user
+          pass: 'kjjaluhzgnbkngen', // generated ethereal password
+        },
+      });
+
+      let correo = req.body.email;
+      let password = req.body.password;
+
+      let info = await transporter.sendMail({
+        from: 'cristiancamiloduarte1502@gmail.com', // sender address
+        to: req.body.email, // list of receivers
+        subject: "Registro exitoso", // Subject line
+        text: "", // plain text body
+        html: "<b>Buen día, adjuntamos tu usuario y contrseña de nuestra tienda virtual"+ "\n" +"User:" +correo + "\n" +"Contraseña:" +password+"</b>", // html body
       });
 
       console.log("Message sent: %s", info.messageId);
